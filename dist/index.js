@@ -26,10 +26,31 @@ var make_new_data = function () {
     return { infected: new_infected, recovered: new_recovered, death: new_death };
 };
 var normalization = function (data) {
+    var stddev = function (data) {
+        var total = 0;
+        for (var i = 0; i < data.length; i++)
+            total += data[i];
+        var mean = total / data.length; // 여기서 평균인 3이 구해진다
+        total = 0;
+        for (var i = 0; i < data.length; i++) {
+            var deviation = data[i] - mean;
+            total += deviation * deviation;
+        }
+        var stddev = Math.sqrt(total / (data.length - 1));
+        return { stddev: stddev, mean: mean };
+    };
+    var no_under0 = data.filter(function (data) { return data >= 0; });
     var find_max_value = function (arr) { return Math.max.apply(null, arr); };
-    var max_number = find_max_value(data);
-    var processed_data = data.map(function (data) { return data / max_number; });
-    return { max_number: max_number, data: processed_data };
+    var find_min_value = function (arr) { return Math.min.apply(null, arr); };
+    //const max_number = find_max_value(no_under0);
+    //const min_number = find_min_value(no_under0);
+    var calcu = stddev(data);
+    var test = stddev([1, 2, 3, 4, 5]);
+    console.log(test);
+    //const processed_data = data.map((data: number) => (data - min_number) / (max_number - min_number));
+    var processed_data = data.map(function (data) { return (data - calcu.mean) / calcu.stddev; });
+    //return { max_number: max_number, data: processed_data };
+    return { calcu: calcu, data: processed_data };
 };
 var new_ = make_new_data();
 var new_infected = normalization(new_.infected);

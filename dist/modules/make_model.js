@@ -12,7 +12,7 @@ function create_ai_data(data) {
         log: true,
         logPeriod: 1000,
         iterations: 999999999999999,
-        errorThresh: 0.0001,
+        errorThresh: 0.001,
     });
     return net.toJSON();
 }
