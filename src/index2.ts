@@ -65,11 +65,11 @@ for (let i = 0; i < new_infected.data.length; i++) {
 }
 console.log(data_set);
 const save_model = () => {
-  const new_data_json: JSON = make_model(new_infected.data, 0.009);
-  save2json(make_output_filepath("model"), new_data_json);
-  //const new_data_json2: JSON = make_model(new_recovered.data, 0.001);
-  //save2json(make_output_filepath("model2"), new_data_json2);
-  //const new_data_json3: JSON = make_model(new_death.data, 0.001);
+  //const new_data_json: JSON = make_model(new_infected.data, 0.001);
+  //save2json(make_output_filepath("model"), new_data_json);
+  const new_data_json2: JSON = make_model(new_recovered.data, 0.01);
+  save2json(make_output_filepath("model2"), new_data_json2);
+  //const new_data_json3: JSON = make_model(new_death.data, 0.01);
   //save2json(make_output_filepath("model3"), new_data_json3);
 };
 save_model();
