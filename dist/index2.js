@@ -16,11 +16,14 @@ covid19_api.map(function (data) {
     recovered.push(data.confirmed.recovered.new);
     death.push(data.confirmed.death.new);
 });
-var normalization = new normalization_1.default(infected);
+var learning_data_set = infected.slice(0, 300);
+var test_data_set = infected.slice(300);
+var normalization = new normalization_1.default(learning_data_set);
 var normalization_data_set = normalization.by_min_max();
 console.log(normalization_data_set);
+//get_model(test, test_data_set.slice(0, 10));
 var save_model = function () {
-    var new_data_json = make_model_1.default(normalization_data_set, 0.014);
-    base_modules_1.save2json(base_modules_1.make_output_filepath("covid_19_model"), new_data_json);
+    var new_data_json = make_model_1.default(normalization_data_set, 0.01);
+    base_modules_1.save2json(base_modules_1.make_output_filepath("standard_deviation"), new_data_json);
 };
 save_model();

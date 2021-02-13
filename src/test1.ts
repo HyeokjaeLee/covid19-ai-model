@@ -1,7 +1,7 @@
 import { get_json_data, save2json, make_output_filepath } from "./modules/base_modules";
 import Normalization from "./modules/normalization";
 import make_model from "./modules/make_model";
-const test = require("../output/standard_deviation.json");
+const test = require("../output/covid_19_model.json");
 const covid19_api = get_json_data("https://toy-projects-api.herokuapp.com/covid19/korea/total");
 import get_model from "./modules/get_model";
 
@@ -13,11 +13,13 @@ covid19_api.map((data: any) => {
   recovered.push(data.confirmed.recovered.new);
   death.push(data.confirmed.death.new);
 });
-const normalization = new Normalization(infected);
+const learning_data_set = infected.slice(0, 300);
+const test_data_set = infected.slice(300);
+console.log(test_data_set.length);
+const normalization = new Normalization(test_data_set);
 const normalization_data_set = normalization.by_min_max();
-console.log(normalization_data_set);
-const save_model = () => {
-  const new_data_json: JSON = make_model(normalization_data_set, 0.014);
-  save2json(make_output_filepath("covid_19_model"), new_data_json);
-};
-save_model();
+const test_arr = normalization_data_set.slice(0, 17).map((data: number) => data * (normalization.max! - normalization.min!) + normalization.min!);
+console.log(test_arr.slice(10, 17));
+const output_arr = get_model(test, test_data_set.slice(0, 14));
+const output_arr2 = output_arr.map((data: number) => data * (normalization.max! - normalization.min!) + normalization.min!);
+console.log(output_arr2);

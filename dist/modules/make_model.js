@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var brain = require("../../brainjs/brain.js");
 function create_ai_data(data, errorThresh) {
     var net = new brain.recurrent.LSTMTimeStep();
-    console.log(data);
     net.train([data], {
         log: true,
         logPeriod: 10,
