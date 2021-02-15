@@ -1,36 +1,43 @@
-const get_standard_deviation = (data: number[], average: number): number => {
-  const total = data.reduce(function (acc, currValue) {
-    const deviation = currValue - average;
-    return acc + deviation * deviation;
-  }, 0);
-  return Math.sqrt(total / (data.length - 1));
-};
-const get_average = (data: number[]): number => {
-  return (
-    data.reduce(function (acc, currValue) {
-      return acc + currValue;
-    }, 0) / data.length
-  );
+const getCleanNumber = (number: number): number => {
+  let checkNumber = number;
+  let cleanNumber: number = number;
+  if (number == 0 || number == 1) {
+    return checkNumber;
+  } else {
+    for (let i = 1; checkNumber >= 10; i = i * 10) {
+      checkNumber = number / i;
+      cleanNumber = i;
+    }
+    return cleanNumber;
+  }
 };
 
-export default class Normalization {
+export class normalization {
   public data: number[];
-  public average: number | undefined;
-  public standard_deviation: number | undefined;
-  public min: number | undefined;
-  public max: number | undefined;
+  public max: number;
+  public clean_max: number;
+  public min: number;
 
   constructor(data: number[]) {
     this.data = data;
+    this.max = Math.max.apply(null, data);
+    this.min = Math.min.apply(null, data);
+    this.clean_max = getCleanNumber(this.max);
   }
-  by_standard_deviation() {
-    this.average = get_average(this.data);
-    this.standard_deviation = get_standard_deviation(this.data, this.average);
-    return this.data.map((_data: number) => (_data - this.average!) / this.standard_deviation!);
+  normalize() {
+    /*return this.data.map(
+      (_data: number) =>
+        Math.round(
+          ((_data - this.min) / (this.max - this.min)) * this.clean_max,
+        ) / this.clean_max,
+    );*/
+    return this.data.map(
+      (_data: number) => (_data - this.min) / (this.max - this.min),
+    );
   }
-  by_min_max() {
-    this.max = Math.max.apply(null, this.data);
-    this.min = Math.min.apply(null, this.data);
-    return this.data.map((data: number) => (data - this.min!) / (this.max! - this.min!));
+  de_normalize(normalizationData: number[]) {
+    return normalizationData.map(
+      (_data: number) => (_data + this.min) * (this.max - this.min),
+    );
   }
 }

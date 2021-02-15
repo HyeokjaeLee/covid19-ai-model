@@ -1,33 +1,41 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var get_standard_deviation = function (data, average) {
-    var total = data.reduce(function (acc, currValue) {
-        var deviation = currValue - average;
-        return acc + deviation * deviation;
-    }, 0);
-    return Math.sqrt(total / (data.length - 1));
-};
-var get_average = function (data) {
-    return (data.reduce(function (acc, currValue) {
-        return acc + currValue;
-    }, 0) / data.length);
-};
-var Normalization = /** @class */ (function () {
-    function Normalization(data) {
-        this.data = data;
+exports.normalization = void 0;
+var getCleanNumber = function (number) {
+    var checkNumber = number;
+    var cleanNumber = number;
+    if (number == 0 || number == 1) {
+        return checkNumber;
     }
-    Normalization.prototype.by_standard_deviation = function () {
+    else {
+        for (var i = 1; checkNumber >= 10; i = i * 10) {
+            checkNumber = number / i;
+            cleanNumber = i;
+        }
+        return cleanNumber;
+    }
+};
+var normalization = /** @class */ (function () {
+    function normalization(data) {
+        this.data = data;
+        this.max = Math.max.apply(null, data);
+        this.min = Math.min.apply(null, data);
+        this.clean_max = getCleanNumber(this.max);
+    }
+    normalization.prototype.normalize = function () {
         var _this = this;
-        this.average = get_average(this.data);
-        this.standard_deviation = get_standard_deviation(this.data, this.average);
-        return this.data.map(function (_data) { return (_data - _this.average) / _this.standard_deviation; });
+        /*return this.data.map(
+          (_data: number) =>
+            Math.round(
+              ((_data - this.min) / (this.max - this.min)) * this.clean_max,
+            ) / this.clean_max,
+        );*/
+        return this.data.map(function (_data) { return (_data - _this.min) / (_this.max - _this.min); });
     };
-    Normalization.prototype.by_min_max = function () {
+    normalization.prototype.de_normalize = function (normalizationData) {
         var _this = this;
-        this.max = Math.max.apply(null, this.data);
-        this.min = Math.min.apply(null, this.data);
-        return this.data.map(function (data) { return (data - _this.min) / (_this.max - _this.min); });
+        return normalizationData.map(function (_data) { return (_data + _this.min) * (_this.max - _this.min); });
     };
-    return Normalization;
+    return normalization;
 }());
-exports.default = Normalization;
+exports.normalization = normalization;
